@@ -6,9 +6,9 @@ int value = 0;
 int someVar = 0;
 
 void setup() {
-  size(400, 400);
-  background(0);
-  
+  size(400, 120);
+
+
   MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
 
   //myBus = new MidiBus(this, "IncomingDeviceName", "OutgoingDeviceName"); // Create a new MidiBus using the device names to select the Midi input and output devices respectively.
@@ -18,36 +18,28 @@ void setup() {
 }
 
 void draw() {
+  fill(255);
+  background(0, 0, 255);
+  textSize(50);
+  text("Midi Channel: "+midiChannel, 0, 50); 
+  text("Intensity: "+value, 0, 100); 
 
-  
+sendMidi();
+
+}
+
+void sendMidi(){
   //velocity++;
- 
+  if (value < 127) {
+    value++;
+  } 
 
-  value++;
   myBus.sendControllerChange(someVar, midiChannel, value); // Send a controllerChange
 
   delay(100);
 }
 
-void noteOn(int channel, int pitch, int velocity) {
-  // Receive a noteOn
-  println();
-  println("Note On:");
-  println("--------");
-  println("Channel:"+channel);
-  println("Pitch:"+pitch);
-  println("Velocity:"+velocity);
-}
 
-void noteOff(int channel, int pitch, int velocity) {
-  // Receive a noteOff
-  println();
-  println("Note Off:");
-  println("--------");
-  println("Channel:"+channel);
-  println("Pitch:"+pitch);
-  println("Velocity:"+velocity);
-}
 
 void controllerChange(int channel, int number, int value) {
   // Receive a controllerChange
