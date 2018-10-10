@@ -23,37 +23,40 @@ int value3 = 126;      // defining start value for third midi output
 
 int someVar = 0;      // no one know how the shizzle this came into play
 
+
+
 void setup() {
   size(400, 400);
 
-textFieldInput();
-  
-  
-  MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
+  textFieldInput();  // call function textFieldInput();
 
-  //myBus = new MidiBus(this, "IncomingDeviceName", "OutgoingDeviceName"); // Create a new MidiBus using the device names to select the Midi input and output devices respectively.
-  //                 Parent  In        Out
-  //                   |     |          |
+
+  MidiBus.list();   // List all available Midi devices on STDOUT. This will show each device's index and name.
+
+
   myBus = new MidiBus(this, -1, "Virtual Midi"); // Create a new MidiBus with no input device and the default Java Sound Synthesizer as the output device.
 }
 
 void draw() {
-  fill(255);
-  background(0, 0, 255);
-  textSize(50);
+  background(0, 0, 0);  // blue background
+  sendMidi();            // call sendMidi() function
+  textOnScreen();        // call textOnScreen() function
+} 
+
+
+void textOnScreen(){
+textSize(50);
   text("Midi Channel: "+midiChannel1, 0, 50); 
   text("Intensity: "+value1, 0, 100); 
   text("Midi Channel: "+midiChannel2, 0, 150); 
   text("Intensity: "+value2, 0, 200); 
   text("Midi Channel: "+midiChannel3, 0, 250); 
   text("Intensity: "+value3, 0, 300); 
+  textSize(20);
 
-  //  Button(int xp, int yp, int s, String text_) {
+    text("Enter delay time", 125, 340); 
 
-  sendMidi();
-} 
-
-
+}
 
 void sendMidi() {
   fadeChannel0();
@@ -61,10 +64,12 @@ void sendMidi() {
   fadeChannel2();
   delay(delayTime);
 
-  myBus.sendControllerChange(someVar, midiChannel1, value1); // Send a controllerChange
-  myBus.sendControllerChange(someVar, midiChannel2, value2); // Send a controllerChange
-  myBus.sendControllerChange(someVar, midiChannel3, value3); // Send a controllerChange
+  myBus.sendControllerChange(someVar, midiChannel1, value1); // Sends midi out (first output)
+  myBus.sendControllerChange(someVar, midiChannel2, value2); // Sends midi out (second output)
+  myBus.sendControllerChange(someVar, midiChannel3, value3); // Sends midi out (third output)
 }
+
+
 void fadeChannel0() {
   if (value1 >= 127 || value1 <=0) {
     dir1 = dir1 *-1;
@@ -104,7 +109,7 @@ void delay(int time) {
 
 void textFieldInput() {
   ControlP5 cp5;
-   String textFieldName = "speed";
+  String textFieldName = "speed";
   PFont font = createFont("arial", 20);
   cp5 = new ControlP5(this);
 
@@ -113,28 +118,28 @@ void textFieldInput() {
 
   int y = 350;
   int spacing = 60;
-    cp5.addTextfield("Delay time")
-       .setPosition(100,y)
-       .setSize(200,40)
-       .setFont(font)
-       .setFocus(true)
-       .setColor(color(255))
-     y += spacing;
-  
+  cp5.addTextfield("Delay time")
+    .setPosition(100, y)
+    .setSize(200, 40)
+    .setFont(font)
+    .setFocus(true)
+    .setColor(color(255))
+    ;
+  y += spacing;
+
 
   textFont(font);
-
 }
 
 
 
 void controlEvent(ControlEvent theEvent) {
-  if(theEvent.isAssignableFrom(Textfield.class)) {
+  if (theEvent.isAssignableFrom(Textfield.class)) {
     println("controlEvent: accessing a string from controller '"
-            +theEvent.getName()+"': "
-            +theEvent.getStringValue()
-            );
-            delayTime = Integer.parseInt(theEvent.getStringValue());
-            println(delayTime);
+      +theEvent.getName()+"': "
+      +theEvent.getStringValue()
+      );
+    delayTime = Integer.parseInt(theEvent.getStringValue());
+    println(delayTime);
   }
 }
