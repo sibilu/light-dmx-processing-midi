@@ -8,7 +8,7 @@ MidiBus myBus; // The MidiBus
 
 //////////////  Declaring varibles  /////////////////
 int offset = 20;
-int delayTime;        //gets input from textfield
+int delayTime = 150;        //gets input from textfield
 int dir1 = -1;
 int dir2 = -1;
 int dir3 = -1;        // direction on first, second and third midi output
@@ -24,17 +24,21 @@ int value3 = 126;      // defining start value for third midi output
 int someVar = 0;      // no one know how the shizzle this came into play
 
 int fill1, fill2, fill3; // fill for visuals
+int edgeRound = 20;
+int leftMarginBtn = 300;
+float x = leftMarginBtn;
+float y = 400;
+float w = 160;
+float h = 70
 
-
-
+  ;
+boolean buttonClicked = false;
 void setup() {
   size(700, 500); //size of window
-  
+
   textFieldInput();  // call function textFieldInput();
 
-
   MidiBus.list();   // List all available Midi devices on STDOUT. This will show each device's index and name.
-
 
   myBus = new MidiBus(this, -1, "Virtual Midi"); // Create a new MidiBus with no input device and the default Java Sound Synthesizer as the output device.
 }
@@ -43,53 +47,88 @@ void setup() {
 
 void draw() {
   background(45);  // background colour
-  
+
   fill(20);
   noStroke();
-rect(250,0,450,500);
+  rect(250, 0, 450, 500);
 
-  sendMidi();            // call sendMidi() function
   textOnScreen();        // call textOnScreen() function
+  pauseBtn();
+
+  playBtn();
   visualizer();          // display visuals
 } 
 
+void pauseBtn() {
+  stroke(127);
+  strokeWeight(3);
+  fill(255, 200, 200);
+  rect(x, y, w, h, edgeRound);
+  fill(0);
+  text("PAUSE", 345, 445); 
 
-void visualizer(){
-int rectLength = 270;
-int rectHeight = 90;
-int leftMarginVis = 350;
-int offset = 125;
-int edgeRound = 20;
+  if (mousePressed) {
+    if (mouseX>x && mouseX <x+w && mouseY>y && mouseY <y+h) {
+      buttonClicked = true;
+    } else {
+    }
+  }
 
-noStroke();
-fill1 = value1*2;  
-fill2 = value2*2;  
-fill3 = value3*2;  
+  if (buttonClicked) {
+  } else {
+    sendMidi();            // call sendMidi() function
+  }
+}
+
+void playBtn() {
+  stroke(127);
+  strokeWeight(3);
+  fill(200, 255, 200);
+  rect(x+190, y, w, h, edgeRound);
+  fill(0);
+  text("PLAY", 540, 445); 
+  if (mousePressed) {
+    if (mouseX>x+190 && mouseX <x+190+w && mouseY>y && mouseY <y+h) {
+      buttonClicked = false;
+    } else {
+    }
+  }
+}
+void visualizer() {
+  int rectLength = 350;
+  int rectHeight = 90;
+  int offset = 125;
+
+  strokeWeight(3);
+  stroke(127);
+  fill1 = value1*2;  
+  fill2 = value2*2;  
+  fill3 = value3*2;  
 
 
-fill(fill1); 
-rect (leftMarginVis,20,rectLength,rectHeight, edgeRound);
-fill(fill2);
-rect (leftMarginVis,20 + offset,rectLength,rectHeight, edgeRound);
-fill(fill3);
-rect (leftMarginVis,20 + 2*offset,rectLength,rectHeight, edgeRound);
-
+  fill(fill1); 
+  rect (leftMarginBtn, 20, rectLength, rectHeight, edgeRound);
+  fill(fill2);
+  rect (leftMarginBtn, 20 + offset, rectLength, rectHeight, edgeRound);
+  fill(fill3);
+  rect (leftMarginBtn, 20 + 2*offset, rectLength, rectHeight, edgeRound);
 }
 
 
 
-void textOnScreen(){
+void textOnScreen() {
   fill(250);
-textSize(30);
+  textSize(30);
   text("Midi Note: "+midiNote1, offset, 50); 
-  text("Intensity: "+value1, offset, 100); 
+  text("Intensity: "+value1, offset, 90); 
   text("Midi Note: "+midiNote2, offset, 175); 
-  text("Intensity: "+value2, offset, 225); 
+  text("Intensity: "+value2, offset, 215); 
   text("Midi Note: "+midiNote3, offset, 300); 
-  text("Intensity: "+value3, offset, 350); 
+  text("Intensity: "+value3, offset, 340); 
   textSize(20);
+  text("Current delay: "+delayTime+" ms", offset, 390); 
 
-    //text("Enter delay time (ms)", 110, 400); 
+  //text("Enter delay time (ms)", 110, 400);
 }
 
 
